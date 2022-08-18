@@ -20,7 +20,7 @@ def get_api_key(file_path: str) -> str:
     with open(file_path, "r") as file:
         fcm_config = load(file)
 
-    return fcm_config.get("private_key")
+    return fcm_config.get("api-key")
 
 
 push_service = FCMNotification(
