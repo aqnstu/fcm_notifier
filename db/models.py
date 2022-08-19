@@ -33,6 +33,7 @@ class FcmMessage(Base):
     preview_main_picture = Column(VARCHAR(1024))
     date_add = Column(DateTime, nullable=False, server_default=text("sysdate "))
     was_processed = Column(NUMBER(1, 0, False), nullable=False, server_default=text("0 "), comment='Факт обработки сообщения: 1 - успех, 0 - еще не обработано, -1 - ошибка')
+    date_processed = Column(DateTime)
 
 
 class FcmMessagePerson(Base):
