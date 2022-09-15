@@ -20,7 +20,9 @@ def get_all_persons() -> List[Optional[str]]:
     """
     Получить всех пользователей.
     """
-    persons = session.query(FcmPerson.id_fcm).all()
+    persons = session.query(
+        FcmPerson.id_fcm
+    ).all()
 
     if persons:
         return [registration_id for registration_id, in persons]
@@ -33,7 +35,8 @@ def get_raw_news(was_processed: int = 0, only_first: bool = False) -> List[FcmMe
     Получить новости.
     """
     query = session.query(FcmMessage).filter(
-        FcmMessage.type == "news", FcmMessage.was_processed == was_processed
+        FcmMessage.type == "news",
+        FcmMessage.was_processed == was_processed
     )
 
     return query.first() if only_first else query.all()
@@ -63,7 +66,9 @@ def publish_news(new_news: List[FcmMessage], all_persons: List[str]) -> None:
 
         try:
             push_service.multiple_devices_data_message(
-                registration_ids=all_persons, data_message=data_msg, low_priority=False
+                registration_ids=all_persons,
+                data_message=data_msg,
+                low_priority=False
             )
 
             was_processed = 1  # факт обработки
@@ -71,9 +76,9 @@ def publish_news(new_news: List[FcmMessage], all_persons: List[str]) -> None:
             was_processed = -1  # факт ошибки
             logger.error(f"id - {int(news.id)}: {format_exc()}")
 
-        session.query(FcmMessage).filter(FcmMessage.id == news.id).update(
-            {FcmMessage.was_processed: was_processed}
-        )
+        session.query(FcmMessage).filter(FcmMessage.id == news.id).update({
+            FcmMessage.was_processed: was_processed
+        })
         session.commit()
 
 
@@ -129,25 +134,25 @@ def publish_message(msgs: List[FcmMessage]) -> None:
                 ensure_ascii=False,
             ),
         }
-        print(data_msg)
 
         persons = get_persons_for_message(
             msg.id
         )  # получаем пользоваетлей в разрезе сообщений
-        print(persons)
 
         try:
             push_service.multiple_devices_data_message(
-                registration_ids=persons, data_message=data_msg, low_priority=False
+                registration_ids=persons,
+                data_message=data_msg,
+                low_priority=False
             )
             was_processed = 1  # факт обработки
         except Exception:
             was_processed = -1  # факт ошибки
             logger.error(f"id - {int(msg.id)}: {format_exc()}")
 
-        session.query(FcmMessage).filter(FcmMessage.id == msg.id).update(
-            {FcmMessage.was_processed: was_processed}
-        )
+        session.query(FcmMessage).filter(FcmMessage.id == msg.id).update({
+            FcmMessage.was_processed: was_processed
+        })
         session.commit()
 
 
@@ -156,9 +161,9 @@ def main():
     Главная функция.
     """
     # новости
-    # new_news = get_raw_news(was_processed=0, only_first=False)  # получаем все "новые" новости
-    # all_persons = get_all_persons()  # получаем всех пользователей
-    # publish_news(new_news, all_persons)  # публикуем новости во всех пользователей
+    new_news = get_raw_news(was_processed=0, only_first=False)  # получаем все "новые" новости
+    all_persons = get_all_persons()  # получаем всех пользователей
+    publish_news(new_news, all_persons)  # публикуем новости во всех пользователей
 
     # сообщения
     new_msgs = get_raw_messages(was_processed=0)  # получаем все "новые" сообщения
