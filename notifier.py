@@ -156,9 +156,9 @@ def main():
     Главная функция.
     """
     # новости
-    # new_news = get_raw_news(was_processed=0, only_first=False)  # получаем все "новые" новости
-    # all_persons = get_all_persons()  # получаем всех пользователей
-    # publish_news(new_news, all_persons)  # публикуем новости во всех пользователей
+    new_news = get_raw_news(was_processed=0, only_first=False)  # получаем все "новые" новости
+    all_persons = get_all_persons()  # получаем всех пользователей
+    publish_news(new_news, all_persons)  # публикуем новости во всех пользователей
 
     # сообщения
     new_msgs = get_raw_messages(was_processed=0)  # получаем все "новые" сообщения
